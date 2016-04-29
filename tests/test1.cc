@@ -16,7 +16,11 @@ int main() {
 
   size_t idx = 0;
   while (tr.next_record()) {
-    if (idx % 1000 == 0) cout << "Event #" << idx << endl;
+    if (idx % 100 == 0) {
+      cout << "Event #" << idx;
+      cout << " has mcLen = " << tr.get(var_names[0]);
+      cout << " and nY = " << tr.get(var_names[1]) << endl;
+    }
     idx++;
   }
 

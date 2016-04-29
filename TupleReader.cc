@@ -1,8 +1,11 @@
+#include <iostream>
 #include <utility>
 #include "TupleReader.h"
 //ROOT Headers
 #include <TBranch.h>
 
+using std::cout;
+using std::endl;
 using std::vector;
 using std::string;
 using std::map;
@@ -25,10 +28,10 @@ TupleReader::~TupleReader() {
 }
 
 void TupleReader::SetAddresses() {
-  var_addresses_ = vector<int*>(var_names_.size());
+  var_values_ = vector<int>(var_names_.size());
   for (size_t idx = 0; idx < var_names_.size(); ++idx) {
     var_vector_indexes_.insert(make_pair(var_names_[idx], idx));
-    root_tree_->SetBranchAddress(var_names_[idx].c_str(), var_addresses_[idx]);
+    root_tree_->SetBranchAddress(var_names_[idx].c_str(), &var_values_[idx]);
   }
 }
 
@@ -43,6 +46,6 @@ bool TupleReader::next_record() {
 }
 
 int TupleReader::get(string var_name) {
-  return 0;
+  return var_values_[var_vector_indexes_[var_name]];
 }
 
