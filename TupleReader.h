@@ -27,7 +27,7 @@ class TupleReader {
                 std::string root_treename);
     ~TupleReader();
 
-    void next_record();
+    bool next_record();
     int get(std::string var_name);
 
   private:
@@ -36,8 +36,10 @@ class TupleReader {
     std::vector<std::string> var_names_;
     TFile *root_file_;
     TTree *root_tree_;
+    std::vector<int*> var_addresses_;
     std::map<std::string, size_t> var_vector_indexes_;
-    int current_event_ = 0, num_events_ = 0;
+    int current_event_idx_ = 0;
+    int num_events_ = 0;
 };
 
 #endif
