@@ -14,9 +14,9 @@ LDFLAGS += -shared
 CXXFLAGS += $(INCFLAGS)
 
 # Target rules
-SOURCES = tuple_reader.cc
+SOURCES = TupleReader.cc
 OBJS = $(patsubst %.cc, %.o, $(SOURCES))
-LIBS = libtuple_reader.so
+LIBS = libTupleReader.so
 
 .PHONY: all clean
 

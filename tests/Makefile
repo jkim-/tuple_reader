@@ -13,7 +13,7 @@ LDFLAGS += $(shell root-config --libs)
 # TupleReader
 TR_ROOT_PATH = ../
 INCFLAGS += -I$(TR_ROOT_PATH)
-LDFLAGS += -L$(TR_ROOT_PATH) -ltuple_reader
+LDFLAGS += -L$(TR_ROOT_PATH) -lTupleReader
 
 CXXFLAGS += $(INCFLAGS)
 
