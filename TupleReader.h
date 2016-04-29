@@ -31,15 +31,15 @@ class TupleReader {
     int get(std::string var_name);
 
   private:
-    void SetAddresses();
-
-    std::vector<std::string> var_names_;
     TFile *root_file_;
     TTree *root_tree_;
-    std::vector<int> var_values_;
-    std::map<std::string, size_t> var_vector_indexes_;
+    std::vector<std::string> var_names_;
+    std::map<std::string, int> var_values_;
+
     int current_event_idx_ = 0;
     int num_events_ = 0;
+
+    void SetAddresses();
 };
 
 #endif

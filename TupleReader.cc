@@ -1,5 +1,6 @@
 #include <iostream>
 #include <utility>
+#include <exception>
 #include "TupleReader.h"
 //ROOT Headers
 #include <TBranch.h>
@@ -28,10 +29,9 @@ TupleReader::~TupleReader() {
 }
 
 void TupleReader::SetAddresses() {
-  var_values_ = vector<int>(var_names_.size());
-  for (size_t idx = 0; idx < var_names_.size(); ++idx) {
-    var_vector_indexes_.insert(make_pair(var_names_[idx], idx));
-    root_tree_->SetBranchAddress(var_names_[idx].c_str(), &var_values_[idx]);
+  for (auto v : var_names_) {
+    var_values_.insert(make_pair(v, 0));
+    root_tree_->SetBranchAddress(v.c_str(), &var_values_[v]);
   }
 }
 
@@ -41,11 +41,15 @@ bool TupleReader::next_record() {
       ++current_event_idx_;
       return true;
     }
+    else
+      throw std::out_of_range("GetEntry error: either entry doesn't exist or I/O error.");
   }
   return false;
 }
 
 int TupleReader::get(string var_name) {
-  return var_values_[var_vector_indexes_[var_name]];
+  if (var_values_.count(var_name) == 0)
+    throw std::domain_error("No such variable, only those in var_names are allowed.");
+  return var_values_[var_name];
 }
 
