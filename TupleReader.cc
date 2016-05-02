@@ -12,10 +12,11 @@ using std::string;
 using std::map;
 using std::make_pair;
 
-TupleReader::TupleReader(vector<string> var_names, 
+TupleReader::TupleReader(vector<string> var_types,
+                         map<string, vector<string>> var_names, 
                          string root_filename,
                          string root_treename)
-    : var_names_(var_names) {
+    : var_types_(var_types), var_names_(var_names) {
   root_file_ = new TFile(root_filename.c_str());
   root_tree_ = (TTree*) root_file_->Get(root_treename.c_str());
   current_event_idx_ = 0;
@@ -29,9 +30,20 @@ TupleReader::~TupleReader() {
 }
 
 void TupleReader::SetAddresses() {
-  for (auto v : var_names_) {
-    var_values_.insert(make_pair(v, 0));
-    root_tree_->SetBranchAddress(v.c_str(), &var_values_[v]);
+  for (auto t : var_types_) {
+    if (t != "int" && t != "float")
+      throw std::invalid_argument("Var_types error: Only supports int and float");
+
+    for (auto v : var_names_[t]) {
+      if (t == "int") {
+        var_values_int_.insert(make_pair(v, 0));
+        root_tree_->SetBranchAddress(v.c_str(), &var_values_int_[v]);
+      }
+      else {  // float
+        var_values_float_.insert(make_pair(v, 0.));
+        root_tree_->SetBranchAddress(v.c_str(), &var_values_float_[v]);
+      }
+    }
   }
 }
 
@@ -47,9 +59,14 @@ bool TupleReader::next_record() {
   return false;
 }
 
-int TupleReader::get(string var_name) {
-  if (var_values_.count(var_name) == 0)
+int TupleReader::GetVarInt(string var_name) const {
+  if (var_values_int_.count(var_name) == 0)
     throw std::domain_error("No such variable, only those in var_names are allowed.");
-  return var_values_[var_name];
+  return var_values_int_.at(var_name);
 }
 
+float TupleReader::GetVarFloat(string var_name) const {
+  if (var_values_float_.count(var_name) == 0)
+    throw std::domain_error("No such variable, only those in var_names are allowed.");
+  return var_values_float_.at(var_name);
+}

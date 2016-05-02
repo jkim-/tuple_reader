@@ -22,19 +22,25 @@
 
 class TupleReader {
   public:
-    TupleReader(std::vector<std::string> var_names, 
+    TupleReader(std::vector<std::string> var_types, 
+                std::map<std::string, std::vector<std::string>> var_names,
                 std::string root_filename,
                 std::string root_treename);
     ~TupleReader();
 
     bool next_record();
-    int get(std::string var_name);
+
+    int GetVarInt(std::string var_name) const;
+    float GetVarFloat(std::string var_name) const;
 
   private:
     TFile *root_file_;
     TTree *root_tree_;
-    std::vector<std::string> var_names_;
-    std::map<std::string, int> var_values_;
+
+    std::vector<std::string> var_types_;
+    std::map<std::string, std::vector<std::string>> var_names_;
+    std::map<std::string, int> var_values_int_;
+    std::map<std::string, float> var_values_float_;
 
     int current_event_idx_ = 0;
     int num_events_ = 0;
